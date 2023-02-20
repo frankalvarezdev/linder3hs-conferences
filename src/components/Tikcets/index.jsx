@@ -35,6 +35,16 @@ export default function Tickets() {
     fetchUser().then((user) => fetchTickets(user));
   }, []);
 
+  if (!user) {
+    return (
+      <div className="flex flex-col items-center justify-center">
+        <p className="text-gray-500">
+          Debes iniciar sesión para ver tus tickets.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <>
       {/* Skeleton loading */}
