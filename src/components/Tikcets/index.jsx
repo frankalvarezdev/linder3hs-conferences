@@ -8,6 +8,7 @@ export default function Tickets() {
   const [user, setUser] = useState(null);
 
   const [tickets, setTickets] = useState([]);
+  const [isLoadingTickets, setIsLoadingTickets] = useState(true);
 
   const fetchUser = async () => {
     const { user } = await getUser();
@@ -26,6 +27,8 @@ export default function Tickets() {
       `*, events(*)`
     );
     setTickets(tickets);
+
+    setIsLoadingTickets(false);
   };
 
   useEffect(() => {
@@ -35,7 +38,7 @@ export default function Tickets() {
   return (
     <>
       {/* Skeleton loading */}
-      {!tickets.length && (
+      {isLoadingTickets && (
         <>
           {Array.from({ length: 2 }).map((_, index) => (
             <TicketCard key={index} />
@@ -44,9 +47,18 @@ export default function Tickets() {
       )}
 
       {/* Si hay por lo menos un ticket */}
-      {tickets.length && tickets.map((ticket) => (
+      {tickets.length > 0 && tickets.map((ticket) => (
         <TicketCard key={ticket.id} ticket={ticket} user={user} />
       ))}
+
+      {/* Si no hay tickets */}
+      {(!isLoadingTickets && !tickets.length) && (
+        <div className="flex flex-col items-center justify-center">
+          <p className="text-gray-500">
+            No tienes tickets registrados
+          </p>
+        </div>
+      )}
     </>
   );
 }
