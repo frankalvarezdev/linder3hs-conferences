@@ -18,24 +18,28 @@ export default function Tickets() {
   };
 
   const fetchTickets = async (user) => {
-    const tickets = await getDataFromTable(
-      "tickets",
-      {
-        key: "user_id",
-        value: user.id,
-      },
-      `*, events(*)`
-    );
-    setTickets(tickets);
-
-    setIsLoadingTickets(false);
+    try {
+      const tickets = await getDataFromTable(
+        "tickets",
+        {
+          key: "user_id",
+          value: user.id,
+        },
+        `*, events(*)`
+      );
+      setTickets(tickets);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoadingTickets(false);
+    }
   };
 
   useEffect(() => {
     fetchUser().then((user) => fetchTickets(user));
   }, []);
 
-  if (!user) {
+  if (!user && !isLoadingTickets) {
     return (
       <div className="flex flex-col items-center justify-center">
         <p className="text-gray-500">
